@@ -6,11 +6,25 @@ FROM {{ ref('stg_orders') }}
 payments AS (
 SELECT *
 FROM {{ ref('stg_payments') }}
-)
+),
 
-SELECT 
+order_payments AS (
+SELECT
+    order_id,
+    SUM(case when status = 'success' then amount end) as amount
+FROM payments
+GROUP BY 1
+),
+
+final as (
+SELECT
     orders.order_id,
     orders.customer_id,
-    payments.amount
+    orders.order_date,
+    coalesce(order_payments.amount, 0) as amount
 FROM orders
-JOIN payments USING (order_id)
+LEFT JOIN order_payments using (order_id)
+)
+
+SELECT *
+FROM final
