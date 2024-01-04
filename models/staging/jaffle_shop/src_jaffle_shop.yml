@@ -6,6 +6,16 @@ sources:
     schema: jaffle_shop
     tables:
       - name: customers
+        columns:
+          - name: id
+            tests:
+              - unique
+              - not_null
       - name: orders
+        columns:
+            - name: id
+              tests:
+                - unique
+                - not_null
 
 #read about source freshness
